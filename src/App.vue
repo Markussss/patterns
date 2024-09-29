@@ -1,7 +1,7 @@
 <script setup>
 //@ts-check
-import { computed, nextTick, ref, watch } from 'vue';
-
+import { computed, nextTick, onMounted, ref } from 'vue';
+import JSColor from '@eastdesire/jscolor';
 
 const pattern = ref([
   // seven vibrant hex colors that are not red, green, or blue:
@@ -12,14 +12,30 @@ const pattern = ref([
   '#00FFFF', // aqua
   '#FF00FF', // fuchsia
   '#FF4500', // orangered
-
-
-
 ]);
+
+const colorPicker = ref();
+onMounted(() => {
+  // @ts-ignore
+  colorPicker.value = new JSColor('#colorInput', {
+    format: 'hex',
+    onFineChange: function () {
+      pattern.value[editingPatternIndex.value] = colorPicker.value.toString();
+      console.log({
+        editingPatternIndex: editingPatternIndex.value,
+        color: colorPicker.value.toString(),
+        pattern: pattern.value,
+      })
+    },
+    onChange: function () {
+      colorPicker.value.hide();
+      pattern.value[editingPatternIndex.value] = colorPicker.value.toString();
+    },
+  });
+});
 
 const recalculate = ref(false);
 
-const colorPicker = ref();
 const rows = ref(50); // we have to scale columns and the square size to fill the screen perfectly, based only on the number of rows we want
 const cols = computed(() => recalculate.value ? 0 : Math.floor(rows.value * (window.innerWidth / window.innerHeight)));
 const squareHeight = computed(() => recalculate.value ? 0 : window.innerHeight / rows.value);
@@ -38,12 +54,18 @@ const squares = computed(() => {
   return result;
 });
 
+const colorInput = ref();
+const editingPatternIndex = ref(-1);
 const switchPatternColorFor = (index) => {
-  colorPicker.value[index % pattern.value.length].click();
+  const fixedIndex = index % pattern.value.length;
+  editingPatternIndex.value = fixedIndex;
+  colorInput.value.value = pattern.value[fixedIndex];
+  colorPicker.value.fromString(pattern.value[fixedIndex]);
+  colorPicker.value.show();
 };
 
 const setPatternLength = () => {
-  const patternLength = prompt('Enter a valid number');
+  const patternLength = prompt('Velg hvor mange farger du vil ha i mønsteret:', pattern.value.length);
   if (patternLength) {
     pattern.value.length = patternLength;
   }
@@ -52,16 +74,15 @@ const setPatternLength = () => {
 
 </script>
 <template>
-<div class="wrapper">
+<input ref="colorInput" id="colorInput" style="display: none !important;">
+<div class="wrapper" @click.right.prevent="setPatternLength">
   <div
-    @click.left="switchPatternColorFor(index)"
-    @click.right.prevent="setPatternLength"
     v-for="(color, index) in squares"
+    @click.left="switchPatternColorFor(index)"
     :style="{background: color}"
     class="square"
   />
 </div>
-<input v-for="(color, index) in pattern" type="color" ref="colorPicker" v-model="pattern[index]" class="hidden" />
 </template>
 
 <style>
@@ -80,7 +101,8 @@ const setPatternLength = () => {
   height: v-bind(squareHeight + 'px');
 }
 .square:first-child
+
 .hidden {
-  display: none;
+  display: none !important;
 }
 </style>

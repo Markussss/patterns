@@ -28,6 +28,11 @@
     "@babel/helper-validator-identifier" "^7.24.7"
     to-fast-properties "^2.0.0"
 
+"@eastdesire/jscolor@^2.5.2":
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/@eastdesire/jscolor/-/jscolor-2.5.2.tgz#6eb056e7fc7e8d40173f8fd72ede72bc4cc52bb3"
+  integrity sha512-WPldVg9Z0tXDOROpbeLslv0Uj/CPgou+6GVMPZs2T+nKOkeBHYVZNfugixBhGzYWKWUumTzmTkLgnCVWlNwl2w==
+
 "@esbuild/aix-ppc64@0.21.5":
   version "0.21.5"
   resolved "https://registry.yarnpkg.com/@esbuild/aix-ppc64/-/aix-ppc64-0.21.5.tgz#c7184a326533fcdf1b8ee0733e21c713b975575f"
