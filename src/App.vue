@@ -59,8 +59,8 @@ const editingPatternIndex = ref(-1);
 const switchPatternColorFor = (index) => {
   const fixedIndex = index % pattern.value.length;
   editingPatternIndex.value = fixedIndex;
-  colorInput.value.value = pattern.value[fixedIndex];
-  colorPicker.value.fromString(pattern.value[fixedIndex]);
+  colorInput.value.value = pattern.value[fixedIndex] || '#ffffff';
+  colorPicker.value.fromString(pattern.value[fixedIndex] || '#ffffff');
   colorPicker.value.show();
 };
 
